@@ -1,0 +1,5 @@
+.teste {
+  -webkit-mask: url(./logo.png) no-repeat center;
+  mask: url(./logo.png) no-repeat center;
+  mask-size: 30px;
+}
