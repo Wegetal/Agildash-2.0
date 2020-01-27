@@ -1,5 +1,7 @@
 import React from "react";
 import Pages from "../../../../routing/Pages";
+import CompanyHandler from "../../hocs/CompanyHandler";
+import RoutesHandler from "../../../../routing/hoc/RoutesHandler";
 
 /**
  * @author Wegner
@@ -8,7 +10,11 @@ import Pages from "../../../../routing/Pages";
  */
 const App = props => (
   <React.Fragment>
-    <Pages />
+    <CompanyHandler>
+      <RoutesHandler>
+        <Pages />
+      </RoutesHandler>
+    </CompanyHandler>
   </React.Fragment>
 );
 

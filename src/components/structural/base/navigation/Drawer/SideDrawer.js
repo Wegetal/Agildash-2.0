@@ -15,6 +15,7 @@ import {
 import classNames from "classnames";
 import styles from "./styles";
 import logo from "./logo.png";
+import ExpandableListItem from "./NavigationList/ExpandableListItem";
 
 /**
  * @author Wegner
@@ -23,7 +24,14 @@ import logo from "./logo.png";
  */
 class SideDrawer extends React.PureComponent {
   render() {
-    const { classes, isMobile, active, open, handleOpen } = this.props;
+    const {
+      classes,
+      isMobile,
+      hidden,
+      open,
+      handleOpen,
+      groupedRoutes
+    } = this.props;
     return (
       <React.Fragment>
         <Drawer
@@ -31,7 +39,7 @@ class SideDrawer extends React.PureComponent {
             classes: {
               root: classNames(classes.drawer, classes.drawerClose, {
                 isMobile: isMobile,
-                active: !active,
+                hidden: hidden,
                 [classes.drawerOpen]: open
               })
             }
@@ -45,90 +53,52 @@ class SideDrawer extends React.PureComponent {
               </MenuItem>
             </Tooltip>
             <Divider light className={classes.divider} />
-            {[
-              {
-                title: "Conta",
-                icon: <Icon>person</Icon>,
-                content: (
-                  <React.Fragment>
-                    <Icon>person</Icon>
-                    <span className={classes.text}>teste</span>
-                  </React.Fragment>
-                ),
-                noPad: true,
-                onClick: () => console.log("T")
-              },
-              {
-                title: "Notificações",
-                icon: <Icon>email</Icon>,
-                content: (
-                  <React.Fragment>
-                    <Icon>email</Icon>
-                    <span className={classes.text}>teste</span>
-                  </React.Fragment>
-                ),
-                noPad: true,
-                onClick: () => console.log("T")
-              },
-              {
-                component: (
-                  <MenuItem className={classNames(classes.item, classes.noPad)}>
-                    <Select
-                      classes={{ icon: classes.selectIcon }}
-                      className={classes.selectContainer}
-                      value="Pt"
-                      MenuProps={{
-                        anchorOrigin: {
-                          vertical: "top",
-                          horizontal: "right"
-                        },
-                        getContentAnchorEl: null
-                      }}
-                      SelectDisplayProps={{ className: classes.select }}
-                      renderValue={value => (
-                        <div>
-                          <Badge
-                            classes={{ badge: classes.badge }}
-                            color="error"
-                            badgeContent={value}
-                          >
-                            <Icon className={classes.icon}>translate</Icon>
-                          </Badge>
-                          {open && (
-                            <span className={classes.text}>{value}</span>
-                          )}
-                        </div>
-                      )}
-                      input={<InputBase type="" />}
-                    >
-                      <MenuItem value={"Pt"}>Portugues</MenuItem>
-                    </Select>
-                  </MenuItem>
-                ),
-                title: "Idioma"
-              },
-              {
-                title: "Logout",
-                icon: <Icon>exit_to_app</Icon>,
-                content: (
-                  <React.Fragment>
-                    <Icon>exit_to_app</Icon>
-                    <span className={classes.text}>Sair</span>
-                  </React.Fragment>
-                )
-              }
-            ].map(({ title, content, icon, component }, i) => (
-              <Tooltip placement="right" key={i} title={title}>
-                {component ? (
-                  component
-                ) : (
-                  <MenuItem className={classes.item}>
-                    {open && content ? content : icon}
-                  </MenuItem>
-                )}
-              </Tooltip>
+            {Object.keys(groupedRoutes).map(groupLabel => (
+              <ExpandableListItem
+                key={groupLabel}
+                label={groupLabel}
+                drawerOpen={open}
+                routes={groupedRoutes[groupLabel]}
+              />
             ))}
-
+            <Tooltip placement="right" title={"Idioma"}>
+              <MenuItem className={classNames(classes.item, classes.noPad)}>
+                <Select
+                  classes={{ icon: classes.selectIcon }}
+                  className={classes.selectContainer}
+                  value="Pt"
+                  MenuProps={{
+                    anchorOrigin: {
+                      vertical: "top",
+                      horizontal: "right"
+                    },
+                    getContentAnchorEl: null
+                  }}
+                  SelectDisplayProps={{ className: classes.select }}
+                  renderValue={value => (
+                    <div>
+                      <Badge
+                        classes={{ badge: classes.badge }}
+                        color="error"
+                        badgeContent={value}
+                      >
+                        <Icon className={classes.icon}>translate</Icon>
+                      </Badge>
+                      {open && <span className={classes.text}>{value}</span>}
+                    </div>
+                  )}
+                  input={<InputBase type="" />}
+                >
+                  <MenuItem value={"Pt"}>Portugues</MenuItem>
+                </Select>
+              </MenuItem>
+            </Tooltip>
+            <Tooltip placement="right" title={"Logout"}>
+              <MenuItem className={classes.item}>
+                <Icon>exit_to_app</Icon>
+                {open && <span className={classes.text}>Sair</span>}
+              </MenuItem>
+            </Tooltip>
             <Divider light className={classes.divider} />
           </MenuList>
           <div className={classes.latestItem}>

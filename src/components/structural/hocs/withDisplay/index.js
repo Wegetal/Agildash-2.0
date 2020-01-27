@@ -6,7 +6,7 @@ import { withWidth } from "@material-ui/core";
  * @created 01-11-2019
  */
 const withDisplay = Component => {
-  class WithDisplay extends React.Component {
+  class WithDisplay extends React.PureComponent {
     checkMobile = () => {
       return (
         !!navigator.userAgent.match(/Android/i) ||
@@ -33,7 +33,7 @@ const withDisplay = Component => {
           isMobile={this.checkMobile()}
           isIos={this.checkIos()}
           screenOrientation={window.screen.orientation}
-          isCordova={window.cordova}
+          isCordova={Boolean(window.cordova)}
           children={children}
           {...otherProps}
         />

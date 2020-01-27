@@ -8,12 +8,12 @@ import { BottomNavigation, BottomNavigationAction } from "@material-ui/core";
  */
 class BottomMenuNavigation extends React.PureComponent {
   render() {
-    const { handleActive } = this.props;
+    const { handleHidden } = this.props;
     return (
       <BottomNavigation>
         <BottomNavigationAction />
         <BottomNavigationAction />
-        <BottomNavigationAction onClick={handleActive} />
+        <BottomNavigationAction onClick={handleHidden} />
       </BottomNavigation>
     );
   }

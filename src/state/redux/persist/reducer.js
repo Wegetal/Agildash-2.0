@@ -10,7 +10,7 @@ import rootReducer from "../reducers";
 const appPersistConf = {
     key: "app",
     storage,
-    whitelist: ["sessionState"]
+    whitelist: ["sessionState", "routesState"]
   },
   persistedReducer = persistReducer(appPersistConf, rootReducer);
 

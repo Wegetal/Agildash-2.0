@@ -10,7 +10,7 @@ const styles = theme => ({
     [theme.breakpoints.up("sm")]: {
       width: theme.spacing(7) + 2
     },
-    "&.isMobile.active": {
+    "&.isMobile.hidden": {
       width: 0
     }
   },

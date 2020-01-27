@@ -1,7 +1,5 @@
 import React from "react";
-import Navigation from "../components/structural/base/navigation";
 import withHistory from "./hoc/withHistory";
-import CompanyHandler from "../components/structural/hocs/CompanyHandler";
 
 /**
  * @author Wegner
@@ -11,13 +9,7 @@ import CompanyHandler from "../components/structural/hocs/CompanyHandler";
 class Page extends React.PureComponent {
   render() {
     const { children } = this.props;
-    return (
-      <React.Fragment>
-        <Navigation>
-          <CompanyHandler>{children}</CompanyHandler>
-        </Navigation>
-      </React.Fragment>
-    );
+    return <React.Fragment>{children}</React.Fragment>;
   }
 }
 

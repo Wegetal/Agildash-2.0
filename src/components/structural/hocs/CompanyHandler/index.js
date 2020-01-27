@@ -11,11 +11,13 @@ import {
 import {
   SET_ACTIVE_COMPANY,
   getCompanyState,
-  CLEAR_ACTIVE_COMPANY
+  CLEAR_ACTIVE_COMPANY,
+  MANAGE_COMPANY_ENV_STATE
 } from "../../../../state/redux/reducers/companyReducer";
 import { getCompanyConfig } from "../../../../services/firebase/structural/company";
 import { makeCompanyFirebase } from "../../../../services/firebase/contextual";
 import UserHandler from "../UserHandler";
+import Navigation from "../../base/navigation";
 
 /**
  * @author Wegner
@@ -34,10 +36,18 @@ class CompanyHandler extends React.PureComponent {
       this.setEnvForCompany();
   }
   setEnvForCompany = () => {
-    const { activeCompany } = this.props;
-    getCompanyConfig(activeCompany.key).then(item =>
-      makeCompanyFirebase(activeCompany.key, item.data())
-    );
+    const { activeCompany, setSettleState } = this.props;
+
+    setSettleState(false).then(() => {
+      getCompanyConfig(activeCompany.key)
+        .then(item => {
+          makeCompanyFirebase(activeCompany.key, item.data());
+          setSettleState(true);
+        })
+        .catch(() => {
+          setSettleState(true);
+        });
+    });
   };
   onFetchCompanies = () => {
     const { auth, onSetLoadedCompanies } = this.props;
@@ -52,11 +62,15 @@ class CompanyHandler extends React.PureComponent {
 
     return (
       <React.Fragment>
-        {
-          <UserHandler auth={auth} activeCompany={activeCompany.key}>
-            {children}
-          </UserHandler>
-        }
+        <Navigation>
+          {/* <React.Fragment> */}
+          {activeCompany.settledEnv && (
+            <UserHandler auth={auth} activeCompany={activeCompany.key}>
+              {children}
+            </UserHandler>
+          )}
+          {/* </React.Fragment> */}
+        </Navigation>
         <Dialog open={!activeCompany.key}>
           <DialogContent>
             <List>
@@ -78,7 +92,7 @@ class CompanyHandler extends React.PureComponent {
 }
 
 const makeMapStateToProps = () => {
-  const mapStateToProps = (state, ownProps) => {
+  const mapStateToProps = state => {
     const companiesState = getUserCompaniesState(state),
       companyState = getCompanyState(state);
     return {
@@ -94,10 +108,13 @@ const mapDispatchToProps = dispatch => ({
     dispatch({ type: SET_USER_SELECTABLE_COMPANIES, companies }),
   setActiveCompany: (company, key) =>
     dispatch({ type: SET_ACTIVE_COMPANY, company, key }),
+  setSettleState: async value =>
+    dispatch({ type: MANAGE_COMPANY_ENV_STATE, value }),
   clearActiveCompany: () => dispatch({ type: CLEAR_ACTIVE_COMPANY })
 });
-
-export default compose(
+CompanyHandler = compose(
   withSession,
   connect(makeMapStateToProps(), mapDispatchToProps)
 )(CompanyHandler);
+
+export default CompanyHandler;
