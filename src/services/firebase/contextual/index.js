@@ -7,15 +7,18 @@ import "@firebase/auth";
  * @email wegner@arquia.com.br
  * @created 06-12-2019
  */
-let companyApp, companyAuth, companyFs;
-const makeCompanyFirebase = (companyId, companyConfig) => {
-  try {
-    companyApp = firebase.app(companyId);
-  } catch (error) {
-    companyApp = firebase.initializeApp(companyConfig, companyId);
-  }
-  companyAuth = companyApp.auth();
-  companyFs = companyApp.firestore();
-};
+export let companyApp, companyAuth, companyFs;
+export const makeCompanyFirebase = (companyId, companyConfig) => {
+    try {
+      companyApp = firebase.app(companyId);
+    } catch (error) {
+      companyApp = firebase.initializeApp(companyConfig, companyId);
+    }
+    companyAuth = companyApp.auth();
+    companyFs = companyApp.firestore();
+  },
+  checkEnvForCompany = () => {
+    return !!companyApp;
+  };
 
-export { companyApp, companyAuth, companyFs, makeCompanyFirebase };
+// export { companyApp, companyAuth, companyFs, makeCompanyFirebase };

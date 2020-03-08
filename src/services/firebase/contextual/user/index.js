@@ -3,14 +3,23 @@ import { companyFs } from "..";
 /**
  * @author Wegner
  * @email wegner@arquia.com.br
+ * @created 19-02-2020
+ */
+export let userRef;
+export const makeUserFirebase = uid => {
+  userRef = companyFs.collection("users").doc(uid);
+  return userRef;
+};
+
+/**
+ * @author Wegner
+ * @email wegner@arquia.com.br
  * @created 06-12-2019
  */
 
-export const onGetCompanyUserDashboards = (uid, thenFunc) => {
+export const onGetCompanyUserDashboards = thenFunc => {
     let dashboards = {};
-    companyFs
-      .collection("users")
-      .doc(uid)
+    userRef
       .collection("dashboards")
       .where("active", "==", true)
       .onSnapshot(querySnapshot => {
@@ -45,19 +54,14 @@ export const onGetCompanyUserDashboards = (uid, thenFunc) => {
         thenFunc(dashboards);
       });
   },
-  onGetCompanyUserData = (uid, thenFunc) => {
-    companyFs
-      .collection("users")
-      .doc(uid)
-      .onSnapshot(docSnaphost => {
-        thenFunc({ ...docSnaphost.data(), id: docSnaphost.id });
-      });
+  onGetCompanyUserData = thenFunc => {
+    userRef.onSnapshot(docSnaphost => {
+      thenFunc({ ...docSnaphost.data(), id: docSnaphost.id });
+    });
   },
-  onGetCompanyUserRoutes = (uid, thenFunc) => {
+  onGetCompanyUserRoutes = thenFunc => {
     let routes = {},
-      unsubscribe = companyFs
-        .collection("users")
-        .doc(uid)
+      unsubscribe = userRef
         .collection("routes")
         .where("active", "==", true)
         .onSnapshot(querySnapshot => {
