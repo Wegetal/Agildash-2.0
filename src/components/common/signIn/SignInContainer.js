@@ -43,7 +43,6 @@ class SignInContainer extends React.PureComponent {
         photoURL,
         refreshToken
       });
-      this.props.history.push("/1");
     });
   };
   onChange = event => {

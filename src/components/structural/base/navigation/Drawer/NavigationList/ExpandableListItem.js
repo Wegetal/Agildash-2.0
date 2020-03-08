@@ -16,7 +16,7 @@ class ExpandableListItem extends React.PureComponent {
   };
   render() {
     const { open } = this.state;
-    const { drawerOpen, routes, label } = this.props;
+    const { drawerOpen, routes, label, handleRoute } = this.props;
     return (
       <React.Fragment>
         <Collapse in={drawerOpen}>
@@ -26,7 +26,12 @@ class ExpandableListItem extends React.PureComponent {
         </Collapse>
         {!drawerOpen && open ? (
           routes.map(item => (
-            <ListItem key={item.icon} button>
+            <ListItem
+              value={item.route}
+              onClick={handleRoute}
+              key={item.icon}
+              button
+            >
               <Icon>{item.icon}</Icon>
             </ListItem>
           ))
@@ -34,10 +39,15 @@ class ExpandableListItem extends React.PureComponent {
           <Collapse in={open}>
             {routes.map(item => {
               return (
-                <div key={item.route}>
+                <ListItem
+                  value={item.route}
+                  onClick={handleRoute}
+                  key={item.route}
+                  button
+                >
                   <Icon>{item.icon}</Icon>
-                  {item.route}
-                </div>
+                  {item.label}
+                </ListItem>
               );
             })}
           </Collapse>

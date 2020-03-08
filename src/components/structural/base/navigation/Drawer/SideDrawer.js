@@ -30,7 +30,8 @@ class SideDrawer extends React.PureComponent {
       hidden,
       open,
       handleOpen,
-      groupedRoutes
+      groupedRoutes,
+      handleRoute
     } = this.props;
     return (
       <React.Fragment>
@@ -59,6 +60,7 @@ class SideDrawer extends React.PureComponent {
                 label={groupLabel}
                 drawerOpen={open}
                 routes={groupedRoutes[groupLabel]}
+                handleRoute={handleRoute}
               />
             ))}
             <Tooltip placement="right" title={"Idioma"}>

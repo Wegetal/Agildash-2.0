@@ -1,18 +1,19 @@
 import React from "react";
 import classNames from "classnames";
 import { compose } from "recompose";
+import { withStyles } from "@material-ui/styles";
 import withDisplay from "../../hocs/withDisplay";
 import BottomMenuNavigation from "./BottomMenuNavigation";
 import SideDrawer from "./Drawer/SideDrawer";
-import { withStyles } from "@material-ui/styles";
 import withRoutes from "../../../../routing/hoc/withRoutes";
+import withHistory from "../../../../routing/hoc/withHistory";
 
 /**
  * @author Wegner
  * @email wegner@arquia.com.br
  * @created 22-10-2019
  */
-class Navigation extends React.Component {
+class Navigation extends React.PureComponent {
   componentDidMount() {
     this.isMobile();
   }
@@ -28,6 +29,10 @@ class Navigation extends React.Component {
   isMobile = () => {
     const { isMobile } = this.props;
     this.setState({ isMobile });
+  };
+  handleRoute = event => {
+    const { history } = this.props;
+    history.push(event.currentTarget.getAttribute("value"));
   };
   render() {
     const {
@@ -50,6 +55,7 @@ class Navigation extends React.Component {
           open={open}
           routes={routes}
           groupedRoutes={groupedRoutes}
+          handleRoute={this.handleRoute}
         />
         <div className={classNames(classes.body, { isMobile: isMobile })}>
           {children}
@@ -63,6 +69,7 @@ class Navigation extends React.Component {
 Navigation = compose(
   withRoutes,
   withDisplay,
+  withHistory,
   withStyles({
     body: {
       "&.isMobile": {
@@ -70,7 +77,7 @@ Navigation = compose(
       }
     },
     app: {
-      paddingLeft: "64px",
+      paddingLeft: "59px",
       "&.isMobile": {
         display: "flex",
         flexDirection: "column",
