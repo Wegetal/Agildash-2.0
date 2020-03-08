@@ -7,10 +7,11 @@ import { SET_CURRENT_ROUTING_HISTORY } from "../state/redux/reducers/routingRedu
  * @email wegner@arquia.com.br
  * @created 01-11-2019
  */
+
 class RoutingDispatcher extends React.PureComponent {
   componentDidMount() {
-    this.dispatchHistory();
     console.log(this.props);
+    this.dispatchHistory();
   }
   dispatchHistory = () => {
     const { history, onSetCurrentHistory } = this.props;
@@ -27,7 +28,4 @@ const mapDispatchToProps = dispatch => ({
     dispatch({ type: SET_CURRENT_ROUTING_HISTORY, history })
 });
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(RoutingDispatcher);
+export default connect(null, mapDispatchToProps)(RoutingDispatcher);

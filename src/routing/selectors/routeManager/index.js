@@ -9,19 +9,18 @@ import { getUserRoutesState } from "../../../state/redux/reducers/companyUserRed
  * @created 13-01-2020
  */
 
-const makeRoutesDisposer = () =>
-  createSelector(
-    [getRoutesState, getUserRoutesState],
-    (appRoutes, userRoutes) => {
-      let routes = [];
-      Object.keys(userRoutes).forEach(crr => {
-        routes.push(appRoutes[crr]);
-      }, []);
+const getRoutes = createSelector(
+  [getRoutesState, getUserRoutesState],
+  (appRoutes, userRoutes) => {
+    let routes = [];
+    Object.keys(userRoutes).forEach(crr => {
+      if (appRoutes[crr]) routes.push(appRoutes[crr]);
+    }, []);
 
-      let groupedRoutes = _.groupBy(_.orderBy(routes, "group"), "groupLabel");
+    let groupedRoutes = _.groupBy(_.orderBy(routes, "group"), "groupLabel");
 
-      return { routes, groupedRoutes };
-    }
-  );
+    return { routes, groupedRoutes };
+  }
+);
 
-export default makeRoutesDisposer;
+export default getRoutes;

@@ -1,12 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
-import makeRoutesDisposer from "../../selectors/routeManager";
+import getRoutes from "../../selectors/routeManager";
 /**
  * @author Wegner
  * @email wegner@arquia.com.br
  * @created 16-12-2019
  */
-const getRoutes = makeRoutesDisposer();
+// const getRoutes = makeRoutesDisposer();
 const withRoutes = Component => {
   class WithRoutes extends React.PureComponent {
     render() {
@@ -25,8 +25,7 @@ const withRoutes = Component => {
   const mapStateToProps = state => {
       const routesObject = getRoutes(state);
       return {
-        routes: routesObject.routes,
-        groupedRoutes: routesObject.groupedRoutes
+        ...routesObject
       };
     },
     mapDispatchToProps = dispatch => ({});

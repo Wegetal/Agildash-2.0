@@ -1,10 +1,9 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import Page from "./Page";
-import { routes } from "./constants";
 import RoutingDispatcher from "./RoutingDispatcher";
 import withRoutes from "./hoc/withRoutes";
-
+import Components from "../components/common/pages";
 /**
  * @author Wegner
  * @email wegner@arquia.com.br
@@ -12,18 +11,26 @@ import withRoutes from "./hoc/withRoutes";
  */
 class Pages extends React.PureComponent {
   render() {
+    const { routes } = this.props;
     return (
       <Page>
         <Switch>
           {routes.map(route => (
             <Route
+              exact={true}
               render={history => (
                 <RoutingDispatcher history={history}>
-                  {route.component}
+                  {Components[route.Component] ? (
+                    React.createElement(Components[route.Component], {
+                      ...history
+                    })
+                  ) : (
+                    <div>i</div>
+                  )}
                 </RoutingDispatcher>
               )}
-              path={route.path}
-              key={route.path}
+              path={route.route}
+              key={route.route}
             />
           ))}
         </Switch>

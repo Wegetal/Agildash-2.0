@@ -8,13 +8,13 @@ import { getRoutingState } from "../../../state/redux/reducers/routingReducer";
  */
 
 const withHistory = Component => {
-  const WithHistory = ({ history, children }) => {
-      return <Component children={children} {...history} />;
+  const WithHistory = ({ history, children, ...otherProps }) => {
+      return <Component children={children} {...history} {...otherProps} />;
     },
     mapStateToProps = state => ({
       history: getRoutingState(state)
     });
-  return connect(mapStateToProps)(WithHistory);
+  return connect(mapStateToProps, () => ({}))(WithHistory);
 };
 
 export default withHistory;
