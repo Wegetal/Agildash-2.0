@@ -10,7 +10,6 @@ import userRoutesReducer from "./companyUserReducers/companyUserRoutesReducer";
 import { companyUserDashboardsReducer } from "./companyUserReducers/companyUserDashboardsReducer";
 import dashboardHandlerReducer from "./dashboardReducers/dashboardHandlerReducer";
 import activeDashboardReducer from "./dashboardReducers/dashboardReducer";
-import persistorReducer from "./persistorReducer";
 
 /**
  * @author Wegner
@@ -18,7 +17,6 @@ import persistorReducer from "./persistorReducer";
  * @created 31-10-2019
  */
 export const reducers = {
-  persistorState: persistorReducer,
   sessionState: sessionReducer,
   routesState: routesReducer,
   routingState: routingReducer,
