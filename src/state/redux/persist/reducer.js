@@ -1,5 +1,6 @@
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
 import rootReducer from "../reducers";
 
 /**
@@ -10,7 +11,8 @@ import rootReducer from "../reducers";
 const appPersistConf = {
     key: "app",
     storage,
-    whitelist: ["sessionState", "routesState"]
+    whitelist: ["sessionState", "routesState", "companyState", "dashItems"],
+    stateReconciler: autoMergeLevel2
   },
   persistedReducer = persistReducer(appPersistConf, rootReducer);
 

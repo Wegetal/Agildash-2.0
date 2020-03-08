@@ -7,5 +7,5 @@ import store from "..";
  * @created 31-10-2019
  */
 const persistor = persistStore(store);
-
+store.persistor = persistor;
 export default persistor;
