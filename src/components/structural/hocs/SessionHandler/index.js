@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { getSessionState } from "../../../../state/redux/reducers/sessionReducer";
 import SignInContainer from "../../../common/signIn/SignInContainer";
-import { SET_AUTH_SESSION_INFO } from "../../../../state/redux/actions/session";
+import { SET_AUTH_SESSION_INFO } from "../../../../state/redux/reducers/sessionReducer";
 
 /**
  * @author Wegner

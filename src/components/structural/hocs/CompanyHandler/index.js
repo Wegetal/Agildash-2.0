@@ -15,7 +15,10 @@ import {
   MANAGE_COMPANY_ENV_STATE
 } from "../../../../state/redux/reducers/companyReducer";
 import { getCompanyConfig } from "../../../../services/firebase/structural/company";
-import { makeCompanyFirebase } from "../../../../services/firebase/contextual";
+import {
+  makeCompanyFirebase,
+  checkEnvForCompany
+} from "../../../../services/firebase/contextual";
 import UserHandler from "../UserHandler";
 import Navigation from "../../base/navigation";
 
@@ -32,22 +35,27 @@ class CompanyHandler extends React.PureComponent {
     const { companies, activeCompany, clearActiveCompany } = this.props;
     if (prevProps.companies[activeCompany.key] && !companies[activeCompany.key])
       clearActiveCompany();
-    if (!prevProps.activeCompany.key && activeCompany.key)
+    if (prevProps.activeCompany.key !== activeCompany.key)
+      this.setEnvForCompany();
+    if (
+      !!prevProps.activeCompany.key &&
+      activeCompany.key &&
+      prevProps.activeCompany.key === activeCompany.key &&
+      !checkEnvForCompany()
+    )
       this.setEnvForCompany();
   }
   setEnvForCompany = () => {
     const { activeCompany, setSettleState } = this.props;
 
-    setSettleState(false).then(() => {
-      getCompanyConfig(activeCompany.key)
-        .then(item => {
-          makeCompanyFirebase(activeCompany.key, item.data());
-          setSettleState(true);
-        })
-        .catch(() => {
-          setSettleState(true);
-        });
-    });
+    getCompanyConfig(activeCompany.key)
+      .then(item => {
+        makeCompanyFirebase(activeCompany.key, item.data());
+        setSettleState(true);
+      })
+      .catch(() => {
+        setSettleState(true);
+      });
   };
   onFetchCompanies = () => {
     const { auth, onSetLoadedCompanies } = this.props;
@@ -58,18 +66,16 @@ class CompanyHandler extends React.PureComponent {
     setActiveCompany(company, key);
   };
   render() {
-    const { children, activeCompany, companies, auth } = this.props;
+    const { children, activeCompany, companies, auth, settledEnv } = this.props;
 
     return (
       <React.Fragment>
         <Navigation>
-          {/* <React.Fragment> */}
-          {activeCompany.settledEnv && (
+          {settledEnv && checkEnvForCompany() && (
             <UserHandler auth={auth} activeCompany={activeCompany.key}>
               {children}
             </UserHandler>
           )}
-          {/* </React.Fragment> */}
         </Navigation>
         <Dialog open={!activeCompany.key}>
           <DialogContent>
@@ -94,10 +100,11 @@ class CompanyHandler extends React.PureComponent {
 const makeMapStateToProps = () => {
   const mapStateToProps = state => {
     const companiesState = getUserCompaniesState(state),
-      companyState = getCompanyState(state);
+      { settledEnv, ...otherCompanyProps } = getCompanyState(state);
     return {
       companies: companiesState,
-      activeCompany: companyState
+      activeCompany: otherCompanyProps,
+      settledEnv: settledEnv
     };
   };
   return mapStateToProps;

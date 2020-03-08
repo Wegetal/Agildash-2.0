@@ -8,9 +8,10 @@ import {
   onGetCompanyUserDashboards,
   onGetCompanyUserData,
   onGetCompanyUserRoutes
-} from "../../../../services/firebase/contextual/company";
+} from "../../../../services/firebase/contextual/user/index";
 import { SET_COMPANY_USER_ROUTES_CONFIG } from "../../../../state/redux/reducers/companyUserReducers/companyUserRoutesReducer";
 import { SET_COMPANY_USER_DASHBOARDS } from "../../../../state/redux/reducers/companyUserReducers/companyUserDashboardsReducer";
+import { makeUserFirebase } from "../../../../services/firebase/contextual/user";
 
 /**
  * @author Wegner
@@ -28,9 +29,10 @@ class UserHandler extends React.PureComponent {
       setCurrentUserData,
       setCurrentUserRoutes
     } = this.props;
-    onGetCompanyUserDashboards(auth.uid, setUserDashboards);
-    onGetCompanyUserData(auth.uid, setCurrentUserData);
-    onGetCompanyUserRoutes(auth.uid, setCurrentUserRoutes);
+    makeUserFirebase(auth.uid);
+    onGetCompanyUserDashboards(setUserDashboards);
+    onGetCompanyUserData(setCurrentUserData);
+    onGetCompanyUserRoutes(setCurrentUserRoutes);
   };
   render() {
     const { children } = this.props;
@@ -51,6 +53,4 @@ const mapStateToProps = state => ({
       dispatch({ type: SET_COMPANY_USER_ROUTES_CONFIG, routes })
   });
 
-UserHandler = connect(mapStateToProps, mapDispatchToProps)(UserHandler);
-UserHandler.whyDidYouRender = true;
-export default UserHandler;
+export default connect(mapStateToProps, mapDispatchToProps)(UserHandler);
