@@ -1,40 +1,46 @@
 import React from "react";
-import {
-  makeBasicCardDispatcher,
-  makeBasicCardReducer,
-  createNewStore
-} from "../../../../state/redux/factory/basicCard";
+import Factory from "../../../../state/redux/factory/factory";
 import { connect } from "react-redux";
+import getDashItemFormat from "./selector";
+import createDispatchers from "../../../../state/redux/factory/dispatchers";
 
 /**
  * @author Wegner
  * @email wegner@arquia.com.br
  * @created 25-02-2020
  */
-const withDashItemMaker = Component => {
+const withDashItemMaker = (Component) => {
   class DashItemHandler extends React.Component {
     componentDidMount() {
-      const { itemKey } = this.props;
-      console.log(this.props);
-      makeBasicCardReducer(itemKey, { mount: false });
-      createNewStore().then(() => {
-        // this.props.onSetData(true);
-      });
+      // const { dashItem } = this.props;
+      // console.log(this.props);
+      Factory.createDashItemEnv(this.props);
+      // createNewStore();
     }
     render() {
+      const { mount, ...otherProps } = this.props;
       return (
         <>
-          <Component />
+          {/* <button
+            onClick={() =>
+              this.props.functions.onSetData({ a: "1", b: "2", c: "3" })
+            }
+          >
+            teste
+          </button> */}
+          <Component dashItem={{ mount }} {...otherProps} />
         </>
       );
     }
   }
   const mapDispatchToProps = (dispatch, ownProps) => {
-    return makeBasicCardDispatcher(dispatch, ownProps.itemKey);
+    return createDispatchers(dispatch, {
+      itemKey: ownProps.itemKey,
+      type: ownProps.type,
+    });
   };
   const mapStateToProps = (state, ownProps) => {
-    console.log(state);
-    return {};
+    return getDashItemFormat(state, ownProps);
   };
   return connect(mapStateToProps, mapDispatchToProps)(DashItemHandler);
 };

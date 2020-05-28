@@ -9,7 +9,9 @@ export const INITIAL_STATE = {},
   activeDashboardReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
       case SET_ACTIVE_DASHBOARD_ITEMS:
-        return { ...action.items };
+        if (JSON.stringify(action.items) !== JSON.stringify(state))
+          return { ...action.items };
+        else return state;
       default:
         return state;
     }

@@ -1,5 +1,10 @@
 import { fs } from "..";
 
+/**
+ * @author Wegner
+ * @email wegner@arquia.com.br
+ * @created 09-03-2020
+ */
 const onGetCompanies = (uid, thenFunc) => {
   let data = {};
   fs.collection("users")

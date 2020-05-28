@@ -10,6 +10,7 @@ import userRoutesReducer from "./companyUserReducers/companyUserRoutesReducer";
 import { companyUserDashboardsReducer } from "./companyUserReducers/companyUserDashboardsReducer";
 import dashboardHandlerReducer from "./dashboardReducers/dashboardHandlerReducer";
 import activeDashboardReducer from "./dashboardReducers/dashboardReducer";
+import datasourcesReducer from "./datasourceHandlerReducer";
 
 /**
  * @author Wegner
@@ -27,12 +28,14 @@ export const reducers = {
   userDashboardsState: companyUserDashboardsReducer,
   dashboardHandlerState: dashboardHandlerReducer,
   activeDashboardState: activeDashboardReducer,
-  dashItems: state => state || {}
+  datasourcesState: datasourcesReducer,
+  dashItems: (state) => state || {},
+  datasources: (state) => state || {},
 };
 const appReducer = combineReducers(reducers),
   rootReducer = (state, action) => {
-    console.log(state);
-    console.log(action);
+    // console.log(state);
+    // console.log(action);
     // if (action.type === '"persist/FLUSH"') action.result();s
     if (action.type === "USER_LOGOUT") {
       storage.removeItem("persist:app");

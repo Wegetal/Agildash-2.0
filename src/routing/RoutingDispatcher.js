@@ -10,7 +10,7 @@ import { SET_CURRENT_ROUTING_HISTORY } from "../state/redux/reducers/routingRedu
 
 class RoutingDispatcher extends React.PureComponent {
   componentDidMount() {
-    console.log(this.props);
+    // console.log(this.props);
     this.dispatchHistory();
   }
   dispatchHistory = () => {

@@ -1,117 +1,75 @@
-import { combineReducers } from "redux";
-import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { reducers } from "../../reducers/index";
-import store from "../../index";
-import autoMergeLevel2 from "redux-persist/es/stateReconciler/autoMergeLevel2";
-
+import autoMergeLevel1 from "redux-persist/es/stateReconciler/autoMergeLevel1";
+import { persistReducer } from "redux-persist";
 /**
  * @author Wegner
  * @email wegner@arquia.com.br
  * @created 25-02-2020
  */
-const STATE_GETTERS = {},
-  DINAMIC_REDUCERS = {};
-
-const makeBasicCardReducer = (
-  itemKey,
-  INITIAL_STATE = {
-    isLoading: false,
-    data: null,
-    dateConfig: {
-      from: "04-05-2019",
-      to: "05-11-2019"
+const makeBasicCard = ({
+    itemKey,
+    INITIAL_STATE = {
+      isLoading: false,
+      data: null,
+      dateConfig: {
+        from: "04-05-2019",
+        to: "05-11-2019",
+      },
+      mount: false,
+    },
+  }) => (state = INITIAL_STATE, action) => {
+    switch (action.type) {
+      case `SET_${itemKey}_LOADING_STATE`:
+        return Object.assign({}, state, { isLoading: action.value });
+      case `SET_${itemKey}_MOUNT_STATE`:
+        return Object.assign({}, state, { mount: action.value });
+      case `SET_${itemKey}_LOADED_DATA`:
+        return Object.assign({}, state, { data: action.value });
+      case `SET_${itemKey}_FILTER_VALUE`:
+        return Object.assign({}, state, {
+          filters: Object.assign({}, state.filters, action.filter),
+        });
+      case `SET_${itemKey}_SELECTED_FILTER`:
+        return Object.assign({}, state, {
+          selectedFilters: Object.assign(
+            {},
+            state.selectedFilters,
+            action.selectedFilter
+          ),
+        });
+      // case `SET_${itemKey}_VALUE`:
+      //   return Object.assign({}, state, action.value);
+      case `CLEAN_${itemKey}_DATA`:
+        return INITIAL_STATE;
+      default:
+        return state;
     }
   },
-  offline = true
-) => {
-  DINAMIC_REDUCERS[`${itemKey}State`] = persistReducer(
-    {
-      key: itemKey,
-      storage,
-      whitelist: [`${itemKey}State`],
-      stateReconciler: autoMergeLevel2
-    },
-    (state = INITIAL_STATE, action) => {
-      console.log("Tesee");
-      switch (action.type) {
-        case `SET_${itemKey}_LOADING_STATE`:
-          return Object.assign({}, state, { isLoading: action.value });
-        case `SET_${itemKey}_LOADED_DATA`:
-          console.log("Teste");
-          return Object.assign({}, state, { mount: action.value });
-        // case `SET_${dashItemId}_FILTER_VALUE`:
-        // 	return Object.assign({}, state, {})
-        case `SET_${itemKey}_VALUE`:
-          return Object.assign({}, state, action.value);
-        case `CLEAN_${itemKey}_DATA`:
-          return INITIAL_STATE;
-        default:
-          return state;
-      }
-    }
-  );
-  makeStateGetter(itemKey);
-};
-
-const makeStateGetter = dashItemId => {
-  STATE_GETTERS[dashItemId] = state => state[`${dashItemId}State`];
-};
-
-const createNewRootReducer = () => {
-  console.log(store);
-  return (state, action) => {
-    if (action.result) console.log(action.result());
-    if (action.type === "USER_LOGOUT") {
-      storage.removeItem("persist:app");
-      state = undefined;
-    }
-
-    return combineReducers({
-      ...reducers,
-      dashItems: combineReducers(DINAMIC_REDUCERS)
-    })(state, action);
-  };
-};
-const makeBasicCardDispatcher = (dispatch, itemKey) => {
-  return {
-    onSetLoading: value =>
-      dispatch({ type: `SET_${itemKey}_LOADING_STATE`, value }),
-    onSetData: value => {
-      console.log("OnFunction");
-      return dispatch({ type: `SET_${itemKey}_LOADED_DATA`, value });
-    },
-    onClearData: () => dispatch({ type: `CLEAN_${itemKey}_DATA` }),
-    onSetValue: value => dispatch({ type: `SET_${itemKey}_VALUE`, value })
-  };
-};
-const createNewStore = async () => {
-  let newRootReducer = createNewRootReducer();
-  console.log(store.persistor);
-  await store.persistor.purge();
-  await store.persistor.pause();
-  store.replaceReducer(
+  makeBasicOfflineCard = (dashItemInfo) =>
     persistReducer(
       {
-        key: "app",
+        key: dashItemInfo.itemKey,
         storage,
-        whitelist: ["sessionState", "routesState", "companyState", "dashItems"],
-        stateReconciler: autoMergeLevel2
+        timeout: null,
+        stateReconciler: autoMergeLevel1,
       },
-      newRootReducer
-    )
-  );
-  await store.persistor.persist();
-  // console.log()
+      makeBasicCard(dashItemInfo)
+    ),
+  makeBasicCardDispatcher = (dispatch, itemKey) => {
+    return {
+      onSetLoading: (value) =>
+        dispatch({ type: `SET_${itemKey}_LOADING_STATE`, value }),
+      onSetData: (value) =>
+        dispatch({ type: `SET_${itemKey}_LOADED_DATA`, value }),
+      onSetMount: (value) =>
+        dispatch({ type: `SET_${itemKey}_MOUNT_STATE`, value }),
+      onClearData: () => dispatch({ type: `CLEAN_${itemKey}_DATA` }),
+      onSetFilterValue: (value) =>
+        dispatch({ type: `SET_${itemKey}_FILTER_VALUE`, value }),
+      onSelectFilter: (selectedFilter) =>
+        dispatch({ type: `SET_${itemKey}_SELECTED_FILTER`, selectedFilter }),
+    };
+  };
 
-  return;
-};
 // console.log(store);
-export {
-  makeBasicCardReducer,
-  STATE_GETTERS,
-  DINAMIC_REDUCERS,
-  createNewRootReducer,
-  createNewStore,
-  makeBasicCardDispatcher
-};
+export { makeBasicCard, makeBasicOfflineCard, makeBasicCardDispatcher };

@@ -8,27 +8,31 @@ import { getActiveDashboardState } from "../../../../state/redux/reducers/dashbo
  * @email wegner@arquia.com.br
  * @created 17-02-2020
  */
+const getMemoizedActiveDashboardState = createSelector(
+    [getActiveDashboardState],
+    dashItems => {
+      const data = Object.values(dashItems);
+      return data;
+    }
+  ),
+  getDashboardInfo = createSelector(
+    [
+      getDashboardHandlerState,
+      getUsersDashboardsState,
+      getMemoizedActiveDashboardState
+    ],
+    (handlerState, dashboards, dashItems) => {
+      let { activeDashboardKey, mount, unsubscribe } = handlerState;
 
-const getDashboardForm = createSelector(
-  [getDashboardHandlerState, getUsersDashboardsState, getActiveDashboardState],
-  (handlerState, dashboards, dashItems) => {
-    let { activeDashboardKey, ...otherProps } = handlerState;
-    console.log(dashboards);
-    if (!!dashboards[activeDashboardKey])
       return {
-        ...handlerState,
-        activeDashboard: dashboards[activeDashboardKey],
-        dashboards,
-        dashItems: Object.values(dashItems)
+        unsubscribe,
+        mount,
+        activeDashboardKey: !!dashboards[activeDashboardKey]
+          ? activeDashboardKey
+          : null,
+        dashItems: dashItems
       };
-    else
-      return {
-        ...otherProps,
-        activeDashboardKey: null,
-        activeDashboard: null,
-        dashboards
-      };
-  }
-);
+    }
+  );
 
-export default getDashboardForm;
+export default getDashboardInfo;
